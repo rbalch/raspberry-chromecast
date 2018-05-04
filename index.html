@@ -1,0 +1,39 @@
+<html>
+<head>
+  <style>
+  body, html {
+    height: 100%;
+    width: 100%;
+    background-color: black;
+  }
+  #myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+  }
+  </style>
+</head>
+	<body>
+    <video autoplay muted loop id="myVideo">
+  <source src="https://media.giphy.com/media/uq6ILNBI6g3As/giphy.mp4" type="video/mp4" id="myVideoSrc">
+</video>
+<script>
+var myVideoSrc = document.getElementById('myVideoSrc');
+var myVideo = document.getElementById('myVideo');
+var myVideoLastLink = '';
+setInterval(function(){
+  fetch("/api.json").then(function(response) {
+    return response.text();
+  }).then(function(data) {
+    if (data != myVideoLastLink) {
+      myVideoLastLink = data;
+      myVideoSrc.src = data;
+      myVideo.load();
+    }
+  });
+}, 10000);
+</script>
+	</body>
+</html>
