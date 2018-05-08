@@ -6,7 +6,7 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = giphy_client.DefaultApi()
-api_key = 'dc6zaTOxFJmzC' # str | Giphy API Key.
+api_key = 'kyrzItAJkKe0679M4WtNGQaoj7OK1ep6' # str | Giphy API Key.
 q = 'tuesday' # str | Search query term or prhase.
 limit = 25 # int | The maximum number of records to return. (optional) (default to 25)
 offset = 0 # int | An optional results offset. Defaults to 0. (optional) (default to 0)
