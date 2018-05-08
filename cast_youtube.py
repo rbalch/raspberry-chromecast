@@ -19,7 +19,7 @@ time.sleep(10)
 
 
 youTubeId = 'zJ7hUvU-d2Q'
-print('Telling casts to track [{id}]'.format(url=youTubeId))
+print('Telling casts to track [{url}]'.format(url=youTubeId))
 
 
 for cast in casts:
