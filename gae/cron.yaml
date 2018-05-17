@@ -1,0 +1,4 @@
+cron:
+- description: "refresh giphy"
+  url: /giphy-cron/
+  schedule: every 5 minutes
