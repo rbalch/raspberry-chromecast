@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Giphy!</title>
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/5.0.2/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <!-- <script defer src="/__/firebase/5.0.2/firebase-auth.js"></script>
+    <script defer src="/__/firebase/5.0.2/firebase-database.js"></script>
+    <script defer src="/__/firebase/5.0.2/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/5.0.2/firebase-storage.js"></script> -->
+    <script defer src="/__/firebase/5.0.2/firebase-firestore.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
+    <style>
+      body, html {
+        height: 100%;
+        width: 100%;
+        background-color: black;
+      }
+      #myVideo {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+      }
+      #myText {
+        font-size: 80px;
+        width: 70%;
+        height: 100%;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+      }
+      #myDiv {
+        height: 100%;
+      }
+      </style>
+    </head>
+    	<body>
+        <video autoplay muted loop id="myVideo">
+          <source src="https://media.giphy.com/media/OCu7zWojqFA1W/giphy.mp4" type="video/mp4" id="myVideoSrc">
+        </video>
+        <div id="myDiv">
+          <p id="myText" align="center"></p>
+        </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        // // The Firebase SDK is initialized and available here!
+        //
+        // firebase.auth().onAuthStateChanged(user => { });
+        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+        // firebase.messaging().requestPermission().then(() => { });
+        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+        //
+        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+        try {
+          let app = firebase.app();
+          var db = app.firestore();
+          var myVideoSrc = document.getElementById('myVideoSrc');
+          var myVideo = document.getElementById('myVideo');
+          var myVideoLastLink = '';
+          var myText = document.getElementById('myText');
+          db.collection("huge_cast").doc("cast_1")
+            .onSnapshot(function(doc) {
+                data = doc.data();
+                console.log("Current data: ", data);
+                if (data.type == 'string') {
+                  myVideo.hidden = true;
+                  document.body.style.backgroundColor = "white";
+                  myText.innerText = data.value;
+                } else if (data.type == 'video') {
+                  document.body.style.backgroundColor = "black";
+                  myText.innerText = '';
+                  myVideo.hidden = false;
+                  myVideoSrc.src = data.value;
+                  myVideo.load();
+                }
+                // var url = doc.data().giphyUrl
+                // if (url != myVideoLastLink) {
+                //   myVideoLastLink = url;
+                //   myVideoSrc.src = url;
+                //   myVideo.load();
+                // }
+            });
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    </script>
+  </body>
+</html>
