@@ -13,7 +13,14 @@ firebase login
 ```bash
 firebase use -add
 ```
-## Deploy Single function
-```base
+## Deploy
+
+### Single function
+```bash
 firebase deploy --only functions:slackIncomingMessage
+```
+
+### Host
+```bash
+firebase deploy --only hosting
 ```
