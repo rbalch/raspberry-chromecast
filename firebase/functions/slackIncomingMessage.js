@@ -1,5 +1,6 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
+const emojis = require('emojis');
 
 
 module.exports = functions.https.onRequest((req, res) => {
@@ -8,23 +9,31 @@ module.exports = functions.https.onRequest((req, res) => {
     const dataRef = db.collection('huge_cast').doc('cast_1');
     res.setHeader('Content-Type', 'application/json');
 
-    let message = req.body.text;
-    let content_type = getContentType(message);
-
     // Update Database
-    let data = {
-        value: message,
-        type: content_type
-    };
+    let data = processRequest(req.body.text);
     dataRef.set(data);
 
     // Response
-    let text = getResponseText(content_type, req.body.user_name);
+    let text = getResponseText(data.type, req.body.user_name);
     let payload = {
         text: text
     };
     res.send(JSON.stringify(payload, null, 3));
 });
+
+
+function processRequest(message) {
+    let content_type = getContentType(message);
+
+    if (content_type === 'text') {
+        message = emojis.unicode(message);
+    }
+
+    return {
+        value: message,
+        type: content_type
+    };
+}
 
 
 function getContentType(value){
@@ -49,6 +58,7 @@ function getResponseText(content_type, user_name) {
         `Look at ${user_name}, causing some trouble`,
         `I'm taking credit for this.`,
         `${user_name} always has the best posts.`,
+        `:thinking_face: Yes yes, of course.`,
     ];
 
     const textArray = [
@@ -58,11 +68,13 @@ function getResponseText(content_type, user_name) {
     const imageArray = [
         `A work of art. :)`,
         `I'm hanging this picture on the fridge.`,
+        `:camera: That's gonig in the slide show.`,
     ];
 
     const videoArray = [
         `*Grabs Popcorn*`,
         `I couldn't find a loading animation so you some dots ........`,
+        `:film_projector:`,
     ];
 
     let resp = generalArray;
