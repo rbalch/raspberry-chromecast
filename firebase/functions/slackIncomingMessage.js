@@ -1,25 +1,64 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const emojis = require('emojis');
+const deAsync = require('deasync');
 
 
 module.exports = functions.https.onRequest((req, res) => {
     console.log(req.body);
+
+    // Init
     const db = admin.firestore();
-    const dataRef = db.collection('huge_cast').doc('cast_1');
+    const chromeCastRef = db.collection('huge_cast').doc('cast_1');
     res.setHeader('Content-Type', 'application/json');
+
+    // Auth
+    let x = isAuthorized(db, req.body.token);
+    console.log("AUTH2: ", x);
+    if (!x){
+        let payload = {
+            text: "Invalid Source."
+        };
+        res.send(JSON.stringify(payload, null, 4));
+        return
+    }
 
     // Update Database
     let data = processRequest(req.body.text);
-    dataRef.set(data);
+    chromeCastRef.set(data);
 
     // Response
     let text = getResponseText(data.type, req.body.user_name);
     let payload = {
         text: text
     };
-    res.send(JSON.stringify(payload, null, 3));
+    res.send(JSON.stringify(payload, null, 4));
 });
+
+
+function isAuthorized(db, token) {
+    let isAuth;
+
+    const slackRef = db.collection('config').doc('slack');
+    slackRef.get()
+        .then(doc => {
+            if (!doc.exists || !doc.data() || !doc.data().tokens) {
+                isAuth = true;
+            } else if (doc.data().tokens.indexOf(token) > -1) {
+                isAuth = true;
+            } else {
+                console.warn('Invalid Source.');
+                isAuth = false
+            }
+        })
+        .catch(err => {
+            console.warn('Error getting document', err);
+            isAuth = false;
+        });
+
+    while(isAuth === undefined) deAsync.sleep(100);
+    return isAuth;
+}
 
 
 function processRequest(message) {

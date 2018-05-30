@@ -13,6 +13,14 @@ firebase login
 ```bash
 firebase use -add
 ```
+
+## Serve
+
+### CLoud functions
+```bash
+firebase serve --only functions -p 5001
+```
+
 ## Deploy
 
 ### Single function
