@@ -68,7 +68,7 @@ function getResponseText(content_type, user_name) {
     const imageArray = [
         `A work of art. :)`,
         `I'm hanging this picture on the fridge.`,
-        `:camera: That's gonig in the slide show.`,
+        `:camera: That's going in the slide show.`,
     ];
 
     const videoArray = [
