@@ -1,7 +1,7 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 const emojis = require('emojis');
-import { sleep } from "deasync";
+const deAsync = require('deasync');
 
 
 module.exports = functions.https.onRequest((req, res) => {
@@ -19,20 +19,20 @@ module.exports = functions.https.onRequest((req, res) => {
         let payload = {
             text: "Invalid Source."
         };
-        res.send(JSON.stringify(payload, null, 3));
+        res.send(JSON.stringify(payload, null, 4));
         return
     }
 
     // Update Database
     let data = processRequest(req.body.text);
-    // chromeCastRef.set(data);
+    chromeCastRef.set(data);
 
     // Response
     let text = getResponseText(data.type, req.body.user_name);
     let payload = {
         text: text
     };
-    res.send(JSON.stringify(payload, null, 3));
+    res.send(JSON.stringify(payload, null, 4));
 });
 
 
@@ -40,7 +40,7 @@ function isAuthorized(db, token) {
     let isAuth;
 
     const slackRef = db.collection('config').doc('slack');
-    let slackDoc = slackRef.get()
+    slackRef.get()
         .then(doc => {
             if (!doc.exists || !doc.data() || !doc.data().tokens) {
                 isAuth = true;
@@ -56,7 +56,7 @@ function isAuthorized(db, token) {
             isAuth = false;
         });
 
-    while(isAuth === undefined) sleep(100);
+    while(isAuth === undefined) deAsync.sleep(100);
     return isAuth;
 }
 
