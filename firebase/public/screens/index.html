@@ -61,17 +61,20 @@
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
 
         try {
-          let app = firebase.app();
-          var db = app.firestore();
-          var myVideoSrc = document.getElementById('myVideoSrc');
-          var myVideo = document.getElementById('myVideo');
-          var myVideoLastLink = '';
-          var myText = document.getElementById('myText');
+          const app = firebase.app();
+          const db = app.firestore();
+          const settings = {timestampsInSnapshots: true};
+          db.settings(settings);
+
+          const myVideoSrc = document.getElementById('myVideoSrc');
+          let myVideo = document.getElementById('myVideo');
+          let myVideoLastLink = '';
+          let myText = document.getElementById('myText');
           db.collection("huge_cast").doc("cast_1")
             .onSnapshot(function(doc) {
                 data = doc.data();
                 console.log("Current data: ", data);
-                if (data.type == 'string') {
+                if (data.type == 'text') {
                   myVideo.hidden = true;
                   document.body.style.backgroundColor = "white";
                   myText.innerText = data.value;

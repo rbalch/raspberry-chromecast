@@ -12,7 +12,7 @@ module.exports = functions.https.onRequest((req, res) => {
     })
     .then(doc => {
       const query = req.query.query || doc.value;
-      const query_type = req.query.type || 'string';
+      const query_type = req.query.type || 'text';
       if (query !== doc.value) {
         doc = {value: query, type: query_type};
         dataRef.set(doc, {merge: true});

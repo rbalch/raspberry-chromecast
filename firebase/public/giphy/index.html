@@ -48,15 +48,18 @@
 
         try {
           let app = firebase.app();
-          var db = app.firestore();
-          var myVideoSrc = document.getElementById('myVideoSrc');
-          var myVideo = document.getElementById('myVideo');
-          var myVideoLastLink = '';
+          const db = app.firestore();
+          const settings = {timestampsInSnapshots: true};
+          db.settings(settings);
+
+          let myVideoSrc = document.getElementById('myVideoSrc');
+          let myVideo = document.getElementById('myVideo');
+          let myVideoLastLink = '';
           db.collection("giphy").doc("castScreens")
             .onSnapshot(function(doc) {
                 console.log("Current data: ", doc.data());
-                var url = doc.data().giphyUrl
-                if (url != myVideoLastLink) {
+                let url = doc.data().giphyUrl;
+                if (url !== myVideoLastLink) {
                   myVideoLastLink = url;
                   myVideoSrc.src = url;
                   myVideo.load();
