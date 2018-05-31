@@ -49,6 +49,7 @@ function isAuthorized(db, token) {
                 console.warn('Invalid Source.');
                 isAuth = false
             }
+            return null
         })
         .catch(err => {
             console.warn('Error getting document', err);
