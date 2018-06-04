@@ -95,7 +95,7 @@ function isImage(url){
     };
 
     let isImage;
-    request(options, function (err, response, body) {
+    request(options, (err, response, body) => {
         if(!err && response.statusCode === 200){
             const magigNumberInBody = body.toString('hex', 0, 4);
             if (magigNumberInBody.startsWith(magic.jpg) ||

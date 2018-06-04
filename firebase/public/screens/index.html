@@ -93,7 +93,7 @@
             .onSnapshot(function(doc) {
                 data = doc.data();
                 console.log("Current data: ", data);
-                if (data.type === 'image') {
+                if (data.type === 'text') {
                   myVideo.hidden = true;
                   myImage.hidden = true;
                   document.body.style.backgroundColor = "white";
