@@ -1,7 +1,7 @@
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
-const emojis = require('emojis');
 const deAsync = require('deasync');
+const emoji = require('node-emoji');
 
 
 module.exports = functions.https.onRequest((req, res) => {
@@ -14,7 +14,6 @@ module.exports = functions.https.onRequest((req, res) => {
 
     // Auth
     let x = isAuthorized(db, req.body.token);
-    console.log("AUTH2: ", x);
     if (!x){
         let payload = {
             text: "Invalid Source."
@@ -66,7 +65,7 @@ function processRequest(message) {
     let content_type = getContentType(message);
 
     if (content_type === 'text') {
-        message = emojis.unicode(message);
+        message = emoji.emojify(message);
     }
 
     return {
