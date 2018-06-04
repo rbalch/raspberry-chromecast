@@ -1,7 +1,8 @@
 const admin = require('firebase-admin');
-const functions = require('firebase-functions');
 const deAsync = require('deasync');
 const emoji = require('node-emoji');
+const functions = require('firebase-functions');
+const request = require('request');
 
 
 module.exports = functions.https.onRequest((req, res) => {
@@ -72,6 +73,40 @@ function processRequest(message) {
         value: message,
         type: content_type
     };
+}
+
+
+function isImage(url){
+    const magic = {
+        jpg: 'ffd8ffe0',
+        png: '89504e47',
+        gif: '47494638'
+    };
+    const options = {
+        method: 'GET',
+        url: url,
+        encoding: null // keeps the body as buffer
+    };
+
+    let isImage;
+
+    request(options, function (err, response, body) {
+        if(!err && response.statusCode === 200){
+            const magigNumberInBody = body.toString('hex', 0, 4);
+            if (magigNumberInBody === magic.jpg ||
+                magigNumberInBody === magic.png ||
+                magigNumberInBody === magic.gif) {
+
+                isImage = true;
+                return null
+            }
+        }
+        isImage = false;
+        return null
+    });
+
+    while(isImage === undefined) deAsync.sleep(100);
+    return isImage;
 }
 
 
