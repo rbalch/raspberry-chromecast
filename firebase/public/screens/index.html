@@ -30,6 +30,14 @@
         width: 100%;
         height: 100%;
       }
+
+      #myImage {
+        width: 100vw;
+        height: 100vh;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
       #myText {
         font-size: 80px;
         width: 70%;
@@ -51,12 +59,13 @@
     </head>
     	<body>
         <video autoplay muted loop id="myVideo">
-          <source src="https://media.giphy.com/media/OCu7zWojqFA1W/giphy.mp4" type="video/mp4" id="myVideoSrc">
+          <source id="myVideoSrc" src="https://media.giphy.com/media/OCu7zWojqFA1W/giphy.mp4" type="video/mp4">
         </video>
+        <div id="myImage" style="background-image: url(http://awards.designforexperience.com/sites/default/files/styles/gallery_images/public/gallery-images/Huge_H_Magenta.jpg)"></div>
         <div id="myDiv">
           <p id="myText" align="center"></p>
         </div>
-    <script>
+        <script>
       document.addEventListener('DOMContentLoaded', function() {
         // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
         // // The Firebase SDK is initialized and available here!
@@ -76,23 +85,34 @@
 
           const myVideoSrc = document.getElementById('myVideoSrc');
           let myVideo = document.getElementById('myVideo');
-          let myVideoLastLink = '';
+          let myImage = document.getElementById('myImage');
           let myText = document.getElementById('myText');
+          let myVideoLastLink = '';
+
           db.collection("huge_cast").doc("cast_1")
             .onSnapshot(function(doc) {
                 data = doc.data();
                 console.log("Current data: ", data);
-                if (data.type == 'text') {
+                if (data.type === 'text') {
                   myVideo.hidden = true;
+                  myImage.hidden = true;
                   document.body.style.backgroundColor = "white";
                   myText.innerHTML = twemoji.parse(data.value);
-                } else if (data.type == 'video') {
+                } else if (data.type === 'video') {
                   document.body.style.backgroundColor = "black";
                   myText.innerText = '';
                   myVideo.hidden = false;
+                  myImage.hidden = true;
                   myVideoSrc.src = data.value;
                   myVideo.load();
+                } else if (data.type === 'image') {
+                  document.body.style.backgroundColor = "black";
+                  myText.innerText = '';
+                  myVideo.hidden = true;
+                  myImage.style.backgroundImage = `url(${data.value})`;
+                  myImage.hidden = false;
                 }
+
                 // var url = doc.data().giphyUrl
                 // if (url != myVideoLastLink) {
                 //   myVideoLastLink = url;

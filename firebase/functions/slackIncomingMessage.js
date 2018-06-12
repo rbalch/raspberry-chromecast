@@ -1,7 +1,8 @@
 const admin = require('firebase-admin');
-const functions = require('firebase-functions');
 const deAsync = require('deasync');
 const emoji = require('node-emoji');
+const functions = require('firebase-functions');
+const request = require('request');
 
 
 module.exports = functions.https.onRequest((req, res) => {
@@ -75,6 +76,48 @@ function processRequest(message) {
 }
 
 
+function isImage(url){
+    /*
+        Checks a resources file signature
+     */
+    const magic = {
+        bmp: '424d',
+        jpg: 'ffd8ff',
+        png: '89504e47',
+        gif: '47494638',
+        tif: '49492a00',
+        webp: '52494646'
+    };
+    const options = {
+        method: 'GET',
+        url: url,
+        encoding: null // keeps the body as buffer
+    };
+
+    let isImage;
+    request(options, (err, response, body) => {
+        if(!err && response.statusCode === 200){
+            const magigNumberInBody = body.toString('hex', 0, 4);
+            if (magigNumberInBody.startsWith(magic.jpg) ||
+                magigNumberInBody.startsWith(magic.bmp) ||
+                magigNumberInBody === magic.png ||
+                magigNumberInBody === magic.tif ||
+                magigNumberInBody === magic.webp ||
+                magigNumberInBody === magic.gif) {
+
+                isImage = true;
+                return null
+            }
+        }
+        isImage = false;
+        return null
+    });
+
+    while(isImage === undefined) deAsync.sleep(200);
+    return isImage;
+}
+
+
 function getContentType(value){
     const pattern = "(ftp|http|https):\\/\\/(\\w+:{0,1}\\w*@)?(\\S+)(:[0-9]+)?(\\/|\\/([\\w#!:.?+=&%@!\\-\\/]))?";
     const re = new RegExp(pattern);
@@ -85,6 +128,9 @@ function getContentType(value){
         const ext = value.split('.').pop().toLowerCase();
         if (imageTypes.indexOf(ext) > -1) return "image";
         if (videoTypes.indexOf(ext) > -1) return "video";
+        if (isImage(value)) {
+            return "image";
+        }
     }
     return "text"
 }
@@ -112,7 +158,7 @@ function getResponseText(content_type, user_name) {
 
     const videoArray = [
         `*Grabs Popcorn*`,
-        `I couldn't find a loading animation so you some dots ........`,
+        `I couldn't find a loading animation so get you some dots ........`,
         `:film_projector:`,
     ];
 
