@@ -168,3 +168,4 @@ typings/
 
 # Firebase
 .firebaserc
+.runtimeconfig.json

@@ -32,3 +32,10 @@ firebase deploy --only functions:slackIncomingMessage
 ```bash
 firebase deploy --only hosting
 ```
+
+### Setting up local environment variables
+```
+firebase functions:config:set XXX.username="XXX" XXX.password="XXX"
+# inside functions folder for local dev:
+firebase functions:config:get > .runtimeconfig.json
+```

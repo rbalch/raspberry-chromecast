@@ -21,18 +21,17 @@ module.exports = functions.https.onRequest((req, res) => {
         };
         res.send(JSON.stringify(payload, null, 4));
         return
+    } else {
+        // Response
+        let data = processRequest(req.body.text);
+        let text = getResponseText(data.type, req.body.user_name);
+        let payload = {
+            text: text
+        };
+        // Update Database
+        res.send(JSON.stringify(payload, null, 4));
+        chromeCastRef.set(data);
     }
-
-    // Update Database
-    let data = processRequest(req.body.text);
-    chromeCastRef.set(data);
-
-    // Response
-    let text = getResponseText(data.type, req.body.user_name);
-    let payload = {
-        text: text
-    };
-    res.send(JSON.stringify(payload, null, 4));
 });
 
 
